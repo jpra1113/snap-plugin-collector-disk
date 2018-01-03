@@ -20,8 +20,13 @@ limitations under the License.
 package main
 
 import (
-	"github.com/intelsdi-x/snap-plugin-collector-disk/disk"
-	"github.com/intelsdi-x/snap-plugin-lib-go/v1/plugin"
+	"github.com/hyperpilotio/snap-plugin-collector-disk/disk"
+	"github.com/jpra1113/snap-plugin-lib-go/v1/plugin"
+	"google.golang.org/grpc"
+)
+
+const (
+	maxMessageSize = 100 << 20
 )
 
 func main() {
@@ -33,6 +38,9 @@ func main() {
 		p,
 		disk.PluginName,
 		disk.PluginVersion,
-		disk.Meta()...,
+		plugin.ConcurrencyCount(1),
+		plugin.GRPCServerOptions(grpc.MaxMsgSize(maxMessageSize)),
+		plugin.GRPCServerOptions(grpc.MaxSendMsgSize(maxMessageSize)),
+		plugin.GRPCServerOptions(grpc.MaxRecvMsgSize(maxMessageSize)),
 	)
 }
